@@ -55,3 +55,12 @@ webhooks:
         }
     retryCount: 3
     disableCallback: true
+
+  - name: Armory CD-as-a-Service Deployment
+    id: deploy
+    uses: armory/cli-deploy-action@main
+    with:
+      clientId: "${{ secrets.ARMORY_CLIENT_ID }}" 
+      clientSecret:  "${{ secrets.ARMORY_CLIENT_SECRET }}" 
+      path-to-file: ".github/workflows/wilco-actions.yml" 
+      waitForDeployment: <true-or-false>
