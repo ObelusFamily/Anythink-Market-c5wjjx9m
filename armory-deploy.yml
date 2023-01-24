@@ -5,7 +5,7 @@ targets:
   staging:
     account: prod
     namespace: anythink-market-yxfrdwlx
-    strategy: bluelake
+    strategy: blue-green-deploy-strat
     constraints:
       afterDeployment:
       - runWebhook:
@@ -20,10 +20,12 @@ trafficManagement:
   - targets: [staging]
     kubernetes:
       - activeService: anythink-frontend
+      - previewService: anythink-frontend
       - activeService: anythink-backend
+      - previewService: anythink-backend
       
 strategies: 
-  bluelake:
+  blue-green-deploy-strat:
     bluegreen:
       redirectTrafficAfter:
         - pause:
@@ -53,3 +55,12 @@ webhooks:
         }
     retryCount: 3
     disableCallback: true
+
+  - name: Armory CD-as-a-Service Deployment
+    id: deploy
+    uses: armory/cli-deploy-action@main
+    with:
+      clientId: ${{ secrets.ARMORY_CLIENT_ID }} 
+      clientSecret:  ${{ secrets.ARMORY_CLIENT_SECRET }} 
+      path-to-file: armory-deploy.yml 
+      waitForDeployment: true
